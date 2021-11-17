@@ -8,30 +8,56 @@ namespace TheFay
 {
     class Program
     {
+        static bool isGameActive = true;
+
+        static bool chose = true;
+
         static string[] story = new string[10];
+
         static char[] splits = { '%' };
+
+        static char[] AB = new char[2];
+
         static void Main(string[] args)
         {
-            Page(1);
+
+            GameLoop();
 
             Console.ReadKey(true);
         }
 
-        static void Page(int choice)
+        static void Page(int letterPicked)
         {
-            //--------------------Arrays-----------------------------
-            story[0] = ("The Temple of Mictlantecuhtli,");
-            story[1] = ("You take a deep breath of fresh forest air.%The trees sway back and forth from the wind, yet the sky sat obscured by the meny leaves above.%More jungle lays before you, sounds of insects and animals were heard within its darkness.%%You are an archaeologist.%%You have heard rumors about a so called temple deep in this jungle.%It is said to be home of the Aztec god of death... Mictlantecuhtli.%The first of meny choices lay before you.%%Will you;%%A - Adventure Onward, or B - Leave The Forest");                      
-            story[2] = ("Page2");
-            story[3] = ("Page3");
-            story[4] = ("Page4");
-            story[5] = ("Page5");
-            story[6] = ("Page6");
-            story[7] = ("Page7");
-            story[8] = ("Page8");
-            story[9] = ("Page9");
 
-            string[] page = story[choice].Split(splits);
+            // each page should display 
+            // 
+            // plot
+            // two story options
+            // two destination page numbers
+            // pages that end the story will be blank
+
+            //==========================Pages======================
+            //--------------------------Title----------------------
+            story[0] = ("The Temple of Mictlantecuhtli,");
+            //-----------------------------------------------------
+            //--------------------------choice 1-------------------
+            story[1] = ("You take a deep breath of fresh forest air.%The trees sway back and forth from the wind, yet the sky sat obscured by the meny leaves above.%More jungle lays before you, sounds of insects and animals were heard within its darkness.%%You are an archaeologist.%%You have heard rumors about a so called temple deep in this jungle.%It is said to be home of the Aztec god of death... Mictlantecuhtli.%The first of meny choices lay before you.%%Will you;%%A - Adventure Onward, or B - Leave The Forest?");                       
+            story[3] = ("You Push onwards through the vast jungle."); // A
+            story[2] = ("You descide to turn back and leave this adventure to someone more brave."); // B
+            //-----------------------------------------------------
+            //--------------------------choice 2-------------------
+            story[4] = ("Page4");
+            story[5] = ("Page5"); // A
+            story[6] = ("Page6"); // B
+            //-----------------------------------------------------
+            //--------------------------choice 3-------------------
+            story[7] = ("Page7");
+            story[8] = ("Page8"); // A
+            story[9] = ("Page9"); // B
+            //------------------------------------------------------
+            //======================================================
+            Console.Clear();
+            string[] page = story[letterPicked].Split(splits);
 
             foreach (string sub in page)
             {
@@ -39,6 +65,44 @@ namespace TheFay
             }
 
             //------------------------------------------------------
+
+        }
+
+        static void GameLoop()
+        {
+            // intitlizes input int
+            int choice = 0;
+
+            // Game plays well loop is active 
+            while (isGameActive == true)
+            {
+                // Shows story
+                Page(choice);
+                // Reads user input
+                chose = true;
+                do
+                {
+                    ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                    if (Input.Key == ConsoleKey.A)
+                    {
+                        // Changes page
+                        choice = choice + 1;
+                        chose = false;
+                    }
+
+                    else if (Input.Key == ConsoleKey.B)
+                    {
+                        // Changes page
+                        choice = choice + 2;
+                        chose = false;
+                    }
+                } 
+                while (chose == true);
+                
+                // Ends GameLoop
+                //isGameActive = false;
+            }
 
         }
         static void Test()
