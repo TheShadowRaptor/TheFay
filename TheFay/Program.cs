@@ -10,6 +10,8 @@ namespace TheFay
     {
         static bool isGameActive = true;
 
+        static bool isGameOver = true;
+
         static bool chose = true;
 
         static string[] story = new string[10];
@@ -23,7 +25,6 @@ namespace TheFay
 
             GameLoop();
 
-            Console.ReadKey(true);
         }
 
         static void Page(int letterPicked)
@@ -42,8 +43,8 @@ namespace TheFay
             //-----------------------------------------------------
             //--------------------------choice 1-------------------
             story[1] = ("You take a deep breath of fresh forest air.%The trees sway back and forth from the wind, yet the sky sat obscured by the meny leaves above.%More jungle lays before you, sounds of insects and animals were heard within its darkness.%%You are an archaeologist.%%You have heard rumors about a so called temple deep in this jungle.%It is said to be home of the Aztec god of death... Mictlantecuhtli.%The first of meny choices lay before you.%%Will you;%%A - Adventure Onward, or B - Leave The Forest?");                       
-            story[3] = ("You Push onwards through the vast jungle."); // A
-            story[2] = ("You descide to turn back and leave this adventure to someone more brave."); // B
+            story[2] = ("You Push onwards through the vast jungle."); // A
+            story[3] = ("You descide to turn back and leave this adventure to someone more brave."); // B
             //-----------------------------------------------------
             //--------------------------choice 2-------------------
             story[4] = ("Page4");
@@ -70,15 +71,14 @@ namespace TheFay
 
         static void GameLoop()
         {
-            // intitlizes input int
-            int choice = 0;
-
-            // Game plays well loop is active 
-            while (isGameActive == true)
+            while (isGameActive)
             {
-                // Shows story
-                Page(choice);
-                // Reads user input
+                // intitlizes input int
+                int choice = 0;
+
+                //=================================================Title=============================================================
+                Page(choice); // Title
+
                 chose = true;
                 do
                 {
@@ -89,19 +89,52 @@ namespace TheFay
                         // Changes page
                         choice = choice + 1;
                         chose = false;
+                        isGameOver = false;
                     }
 
                     else if (Input.Key == ConsoleKey.B)
                     {
                         // Changes page
-                        choice = choice + 2;
-                        chose = false;
+                        isGameActive = false;
+                        break;
                     }
-                } 
+                }
                 while (chose == true);
-                
-                // Ends GameLoop
-                //isGameActive = false;
+                //===================================================================================================================
+
+
+                // ===================================== Game plays well loop is active =============================================
+                while (isGameOver == false)
+                {
+                    // Shows story
+                    Page(choice);
+
+                    // -----------------------------------------Reads user input-----------------------------------------------------
+                    chose = true;
+                    do
+                    {
+                        ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                        if (Input.Key == ConsoleKey.A)
+                        {
+                            // Changes page
+                            choice = choice + 1;
+                            chose = false;
+                        }
+
+                        else if (Input.Key == ConsoleKey.B)
+                        {
+                            // Changes page
+                            choice = choice + 2;
+                            chose = false;
+                        }
+                    }
+                    while (chose == true);
+
+                    // Ends GameLoop
+                    //isGameActive = false;
+                }
+                // ===================================================================================================================
             }
 
         }
