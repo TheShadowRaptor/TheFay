@@ -27,6 +27,7 @@ namespace TheFay
 
         static bool gameActive = true;
 
+        static bool titleActive = true;
         //==========================================================================================================
 
         //Plays Code
@@ -38,29 +39,29 @@ namespace TheFay
         static void Story()
         {
             //==========================================Story Arrays=================================================
-            story[0] = "You are in a mine. A split comes up. Do you?;Go to the left (A) Go to the right (B);1;2"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions)
-            story[1] = "PlotTwo;OptionOne.two OptionTwo.Two;3;4"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions
+            story[0] = "Welcome to the title; Start(A) exit(B);1;0"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions)
+            story[1] = "PlotTwo;OptionOne.two OptionTwo.Two;2;5"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions
             story[2] = "PlotThree;OptionOne.Three OptionTwo.Three;5;6"; //ect...
-            story[3] = "Text4";
-            story[4] = "Text5";
-            story[5] = "Text6";
+            story[3] = "Text4;op;2;3";
+            story[4] = "Text5;op;4;2";
+            story[5] = "You died; Game Over";
             //=======================================================================================================
 
             //turns page into story substring then splits the char (';') from it
-            string[] page = story[pageNumber].Split(splits);
+            string[] sub = story[pageNumber].Split(splits);
 
             //Converts choice one into a int
-            parse1 = int.Parse(page[2]);
+            parse1 = int.Parse(sub[2]);
             
             //Converts choice two into an int
-            parse2 = int.Parse(page[3]);
+            parse2 = int.Parse(sub[3]);
 
             //Writes sub strings after split 
 
             //Display Story
             Console.Clear();
-            Console.WriteLine(page[0]);
-            Console.WriteLine(page[1]);
+            Console.WriteLine(sub[0]);
+            Console.WriteLine(sub[1]);
         }
         static void GameLoop()
         {
@@ -77,12 +78,25 @@ namespace TheFay
             ConsoleKeyInfo Input = Console.ReadKey(true);
             if(Input.Key == ConsoleKey.A)
             {
+                if(titleActive == true)
+                {
+                    titleActive = false;
+                }
+
                 pageNumber = parse1;
             }
 
             if (Input.Key == ConsoleKey.B)
             {
-                pageNumber = parse2;
+                if(titleActive == true)
+                {
+                    gameActive = false;
+                }
+                
+                    pageNumber = parse2;
+               
+                
+
             }
         }
     }
