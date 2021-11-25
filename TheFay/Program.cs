@@ -38,7 +38,7 @@ namespace TheFay
         static void Story()
         {
             //==========================================Story Arrays=================================================
-            story[0] = "PlotOne;OptionOne.one OptionTwo.one;1;2"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions)
+            story[0] = "You are in a mine. A split comes up. Do you?;Go to the left (A) Go to the right (B);1;2"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions)
             story[1] = "PlotTwo;OptionOne.two OptionTwo.Two;3;4"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions
             story[2] = "PlotThree;OptionOne.Three OptionTwo.Three;5;6"; //ect...
             story[3] = "Text4";
@@ -58,6 +58,7 @@ namespace TheFay
             //Writes sub strings after split 
 
             //Display Story
+            Console.Clear();
             Console.WriteLine(page[0]);
             Console.WriteLine(page[1]);
         }
@@ -66,30 +67,22 @@ namespace TheFay
             while(gameActive == true)
             {
                 Story();
-                DisplayText();
                 PlayerInput();
             }
-        }
-        static void DisplayText()
-        {
-            
         }
 
         static void PlayerInput()
         {
             //Player Input
-            string input = Console.ReadLine();
-            switch (input)
+            ConsoleKeyInfo Input = Console.ReadKey(true);
+            if(Input.Key == ConsoleKey.A)
             {
-                //Player types a
-                case "a":
-                    pageNumber = parse1;
-                    break;
+                pageNumber = parse1;
+            }
 
-                //Play types b 
-                case "b":
-                    pageNumber = parse2;
-                    break;
+            if (Input.Key == ConsoleKey.B)
+            {
+                pageNumber = parse2;
             }
         }
     }
