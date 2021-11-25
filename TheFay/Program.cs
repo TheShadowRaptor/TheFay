@@ -27,18 +27,21 @@ namespace TheFay
         }
         static void Story()
         {
-            story[0] = "TextOne;SubOne;";
-            story[1] = "Text2";
-            story[2] = "Text3";
+            story[0] = "PlotOne;OptionOne.one OptionTwo.one;1;2"; //Plot1, Two story Options2, Choices 3/4
+            story[1] = "PlotTwo;OptionOne.two OptionTwo.Two;3;4"; //Plot1, Two story Options2, Choices 3/4
+            story[2] = "PlotThree;OptionOne.Three OptionTwo.Three;5;6"; //ect...
             story[3] = "Text4";
             story[4] = "Text5";
             story[5] = "Text6";
 
             string[] page = story[pageNumber].Split(splits);
 
+            int parse = int.Parse(page[2]);
+
             foreach (string sub in page)
             {
-                Console.WriteLine($"{sub}");
+                //Console.WriteLine($"{sub}");
+                Console.WriteLine($"{parse}");
             }
         }
         static void GameLoop()
