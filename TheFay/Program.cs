@@ -21,13 +21,18 @@ namespace TheFay
         //Sub string of the story array 
         static string[] page = new string[3];
 
+        //Initalizes parse
+        static int parse1;
+        static int parse2;
+
+        static bool gameActive = true;
+
         //==========================================================================================================
 
         //Plays Code
         static void Main(string[] args)
         {
-            Story();
-            Console.ReadKey(true);
+            GameLoop();
         }
 
         static void Story()
@@ -45,21 +50,47 @@ namespace TheFay
             string[] page = story[pageNumber].Split(splits);
 
             //Converts choice one into a int
-            int parse1 = int.Parse(page[2]);
+            parse1 = int.Parse(page[2]);
             
             //Converts choice two into an int
-            int parse2 = int.Parse(page[3]);
+            parse2 = int.Parse(page[3]);
 
             //Writes sub strings after split 
-            foreach (string sub in page)
-            {
-                Console.WriteLine($"{sub}");
-            }
+
+            //Display Story
+            Console.WriteLine(page[0]);
+            Console.WriteLine(page[1]);
         }
         static void GameLoop()
         {
-            //Player Input
+            while(gameActive == true)
+            {
+                Story();
+                DisplayText();
+                PlayerInput();
+            }
+        }
+        static void DisplayText()
+        {
+            
+        }
 
+        static void PlayerInput()
+        {
+            //Player Input
+            string input = Console.ReadLine();
+            switch (input)
+            {
+                //Player types a
+                case "a":
+                    pageNumber = parse1;
+                    break;
+
+                //Play types b 
+                case "b":
+                    pageNumber = parse2;
+                    break;
+            }
         }
     }
 }
