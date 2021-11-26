@@ -10,24 +10,31 @@ namespace TheFay
     {
         //====================================================ints==================================================
         //Determins how much pages the story has
-        static string[] story = new string[10];
+        static string[] story = new string[11];
 
         //splits (';') char from string
         static char[] splits = {';'};
 
         //Determins which array in story you are in (Will change on input)
         static int pageNumber = 0;
+       
+        static string nextPageA;
+        static string nextPageB;
 
-        //Sub string of the story array 
-        static string[] page = new string[3];
+        //initilizes choice ints
+        static int choiceA;
+        static int choiceB;
 
-        //Initalizes parse
-        static int parse1;
-        static int parse2;
+        //Initalizes subArray
+        static string[] sub = new string[3];
 
-        static bool gameActive = true;
+        //Initilizes gameLoop
+        static bool gameLoop = true;
 
-        static bool titleActive = true;
+        //Disables Input
+        static bool inputDis = false;
+
+       
         //==========================================================================================================
 
         //Plays Code
@@ -36,68 +43,103 @@ namespace TheFay
             GameLoop();
         }
 
+        //Displays story
         static void Story()
         {
             //==========================================Story Arrays=================================================
-            story[0] = "Welcome to the title; Start(A) exit(B);1;0"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions)
+            // use (';') to split strings.
+            // use (end) for end page.
+            // use (title) to determine title page
+            story[0] = "Welcome to the title; Start(A) exit(B);1;0;title"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions)
             story[1] = "PlotTwo;OptionOne.two OptionTwo.Two;2;5"; //Plot(1), Two story Options(2), Choices (3/4) (page[] Positions
             story[2] = "PlotThree;OptionOne.Three OptionTwo.Three;5;6"; //ect...
             story[3] = "Text4;op;2;3";
             story[4] = "Text5;op;4;2";
-            story[5] = "You died; Game Over";
+            story[5] = "You died; Game Over;end" ;
             //=======================================================================================================
 
-            //turns page into story substring then splits the char (';') from it
-            string[] sub = story[pageNumber].Split(splits);
-
-            //Converts choice one into a int
-            parse1 = int.Parse(sub[2]);
-            
-            //Converts choice two into an int
-            parse2 = int.Parse(sub[3]);
-
-            //Writes sub strings after split 
+            //splits storyArray into subArray (sub)
+            Split();
 
             //Display Story
             Console.Clear();
             Console.WriteLine(sub[0]);
             Console.WriteLine(sub[1]);
+
+            //Checks if gameOver
+            GameEnd();          
+         
         }
+
+        //Loops Game
         static void GameLoop()
         {
-            while(gameActive == true)
+            while (gameLoop == true)
             {
                 Story();
                 PlayerInput();
             }
         }
 
+        //Reads player input
         static void PlayerInput()
         {
             //Player Input
             ConsoleKeyInfo Input = Console.ReadKey(true);
-            if(Input.Key == ConsoleKey.A)
+            if (inputDis == false)
             {
-                if(titleActive == true)
+                //turns string to int
+                Parse();
+
+                //Detects if A is pressed
+                if (Input.Key == ConsoleKey.A)
                 {
-                    titleActive = false;
+                    //Checks if Title is active                   
+                    pageNumber = choiceA;
                 }
 
-                pageNumber = parse1;
-            }
-
-            if (Input.Key == ConsoleKey.B)
-            {
-                if(titleActive == true)
+                //Detects if B is pressed
+                if (Input.Key == ConsoleKey.B)
                 {
-                    gameActive = false;
-                }
-                
-                    pageNumber = parse2;
-               
-                
+                    //checks if Title is active
+                    if (sub.Contains("title"))
+                    {
+                        gameLoop = false;
+                    }
 
+                    pageNumber = choiceB;
+
+                }
+            }                 
+        }
+
+        static void GameEnd()
+        {
+            //Checks if subArray has "end" in it
+            // if it does. End the game
+            if (sub.Contains("end"))
+            {
+                gameLoop = false;
+                inputDis = true;
             }
+        }
+
+        static void Split()
+        {
+            //turns page into story substring then splits the char (';') from it
+            sub = story[pageNumber].Split(splits);
+        }
+
+        static void Parse()
+        {
+            nextPageA = sub[2];
+            nextPageB = sub[3];
+
+            //Converts choice one into a int
+            Int32.TryParse(nextPageA, out choiceA);
+
+            //Converts choice two into an int
+            Int32.TryParse(nextPageB, out choiceB);
         }
     }
 }
