@@ -13,9 +13,6 @@ namespace TheFay
         //Determins how much pages the story has
         static string[] story;
 
-        //Saves current page to file
-        static string saveGame;
-
         //splits (';') char from string
         static char[] splits = {';'};
 
@@ -44,8 +41,6 @@ namespace TheFay
 
         //initilizes "SavedGame.txt" file
         static string saveFile = "SavedGame.txt";
-
-        static string test = "bob";
 
        
         //==========================================================================================================
@@ -125,8 +120,13 @@ namespace TheFay
                 //Detects if S is pressed
                 if (Input.Key == ConsoleKey.S)
                 {
+                    File.WriteAllLines(saveFile, sub);
+                }
 
-                    File.WriteAllText(saveFile, test);
+                if (Input.Key == ConsoleKey.L)
+                {
+                    Console.Clear();
+                    
                 }
             }                 
         }
