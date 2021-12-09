@@ -105,9 +105,13 @@ namespace TheFay
                 Console.WriteLine("Page " + (currentPage + 1));                             
                 Console.WriteLine("");
 
+                //------------------------------------Top Border---------------------------
+
+                Console.WriteLine("=======================================================================");
+                //-------------------------------------------------------------------------
+
                 //Writes everyline in pageContents up till the last 4 (Option1, Option2, page1, page2)
                 //If end page it will display everything
-                Console.WriteLine("===========================================");
                 foreach (string s in pageContents)
                 {                  
                     Console.WriteLine(s);
@@ -120,20 +124,27 @@ namespace TheFay
                     }
                 }
 
+                //---------------------------------Bottem Border-----------------------------
+
+                Console.WriteLine("=======================================================================");
+                //---------------------------------------------------------------------------
+
                 //Shows players options
                 //It 
                 if (endPageActive == false)
                 {
-                    Console.WriteLine("===========================================");
+                    Console.WriteLine("");
+                    Console.WriteLine("=======================================");
                     Console.WriteLine("[1] - " + pageContents[pageContents.Length - 4]);
                     Console.WriteLine("[2] - " + pageContents[pageContents.Length - 3]);
-                    Console.WriteLine("===========================================");
+                    Console.WriteLine("=======================================");
+                    Console.WriteLine("");
                     Console.WriteLine("---------------------------------------");
                     Console.WriteLine("|                                     |");
-                    Console.WriteLine("|                                     |");
+                    Console.WriteLine("|  [3] - SaveGame    [4] - LoadGame   |");
+                    Console.WriteLine("|       [Esc] - Return to title       |");
                     Console.WriteLine("|                                     |");
                     Console.WriteLine("---------------------------------------");
-
                 }
                 Console.WriteLine("");
                 Console.WriteLine("");
@@ -260,7 +271,7 @@ namespace TheFay
                     {
                         if (isTitleActive == true)
                         {
-                            SaveData();
+                            LoadGame();
                         }
 
                         else
@@ -296,7 +307,7 @@ namespace TheFay
 
                         else
                         {
-                            SaveData();
+                            LoadGame();
                         }
                         break;
                     }
@@ -344,12 +355,13 @@ namespace TheFay
         }
 
         //Holds and Loads Save Data
-        static void SaveData()
+        static void LoadGame()
         {           
             Console.Clear();
             slotOne = File.ReadAllText(saveFile1);
             slotTwo = File.ReadAllText(saveFile2);
             slotThree = File.ReadAllText(saveFile3);
+
             if (slotOne == "")
             {
                 Console.WriteLine("No save data found");
@@ -369,6 +381,10 @@ namespace TheFay
             {
                 bool loadLoop = true;
 
+                slotParseOne = int.Parse(slotOne);
+                slotParseTwo = int.Parse(slotTwo);
+                slotParseThree = int.Parse(slotThree);
+
                 while (loadLoop == true)
                 {
                     Console.WriteLine("Choose a slot to load");
@@ -384,6 +400,43 @@ namespace TheFay
                     Console.WriteLine("---------------------------------------------------------------");
 
                     ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                    if (Input.Key == ConsoleKey.D1)
+                    {
+                        currentPage = slotParseOne + 1;
+                        loadLoop = false;
+                        isTitleActive = false;
+                        Console.WriteLine("Loaded slot one!");
+                    }
+
+                    else if (Input.Key == ConsoleKey.D2)
+                    {
+                        currentPage = slotParseTwo + 1;
+                        loadLoop = false;
+                        isTitleActive = false;
+                        Console.WriteLine("Loaded slot two!");
+                    }
+
+                    else if (Input.Key == ConsoleKey.D3)
+                    {
+                        currentPage = slotParseThree + 1;
+                        loadLoop = false;
+                        isTitleActive = false;
+                        Console.WriteLine("Loaded slot three!");
+                    }
+
+                    else if (Input.Key == ConsoleKey.D4)
+                    {
+                        loadLoop = false;
+                    }
+
+                    else
+                    {
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.Write(new string(' ', Console.BufferWidth));
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.WriteLine("{Error} Button does not exist");
+                    }
                 }               
             }
         }
@@ -396,14 +449,14 @@ namespace TheFay
 
             while (saveLoop == true)
             {
-                //Saves Current Page               
-                string slotOne = File.ReadAllText(saveFile1);
-                string slotTwo = File.ReadAllText(saveFile2);
-                string slotThree = File.ReadAllText(saveFile3);
+                //---------------------------------Saves Current Page------------------------------------            
+                slotOne = File.ReadAllText(saveFile1);
+                slotTwo = File.ReadAllText(saveFile2);
+                slotThree = File.ReadAllText(saveFile3);
 
-                int slotParseOne = int.Parse(slotOne); 
-                int slotParseTwo = int.Parse(slotTwo); 
-                int slotParseThree = int.Parse(slotThree); 
+                slotParseOne = int.Parse(slotOne); 
+                slotParseTwo = int.Parse(slotTwo); 
+                slotParseThree = int.Parse(slotThree); 
 
                 Console.WriteLine("Choose a save slot");
 
