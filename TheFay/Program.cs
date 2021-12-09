@@ -10,156 +10,334 @@ namespace TheFay
     class Program
     {
         //====================================================ints==================================================
-        //Determins how much pages the story has
+        //Opens story file on start
         static string[] story;
 
         //splits (';') char from string
         static char[] splits = {';'};
 
         //Determins which array in story you are in (Will change on input)
-        static int pageNumber = 0;
+        static int currentPage;
        
-        static string nextPageA;
-        static string nextPageB;
+        //Grabs page number from array
+        static string OptionOne;
+        static string OptionTwo;
 
-        //initilizes choice ints
-        static int choiceA;
-        static int choiceB;
+        //Converts Options into int
+        static int choiceOne;
+        static int choiceTwo;
 
         //Initalizes subArray
-        static string[] sub = new string[3];
-        static string[] paragraph = new string[10];
+        static string[] pageContents = new string[3];
 
-        //Initilizes gameLoop
+        //Checks if game is running
         static bool gameLoop = true;
 
         //Disables Input
-        static bool inputDis = false;
+        static bool isInputActive = true;
 
+        //Checks if Title is active
+        static bool isTitleActive = true;
+
+        //----------------------------Text Files------------------------------------
         //initilizes "story.txt" file
         static string storyFile = "Story.txt";
 
         //initilizes "SavedGame.txt" file
         static string saveFile = "SavedGame.txt";
 
-       
+        //initilizes "Title.txt" file
+        static string titleFile = "Title.txt";
+        //--------------------------------------------------------------------------
+
+        //converts pageNumber to string
+        static string pageToString;
+
+
         //==========================================================================================================
 
         //Plays Code
         static void Main(string[] args)
         {
-            GameLoop();
+            DebugLog();
+            InitiateStory();
+            RunGame();
         }
 
-        //Displays story
-        static void Story()
+        //---------------------------------------------------methods--------------------------------------------------
+        //
+        //in order from A -> Z
+        //
+
+        //Displays Story
+        static void DisplayStory()
+        {
+            ShowTitle();
+            Console.WriteLine("");
+            Console.WriteLine("");
+            ShowMainMenu();
+
+            if (isTitleActive == false)
+            {
+                //splits storyArray into subArray (sub)
+                SplitStory();
+
+                //Checks if gameOver
+                EndGame();
+
+                //Displays Story
+                Console.Clear();
+
+                Console.WriteLine("Page " + (currentPage + 1));                             
+                Console.WriteLine("");
+                foreach (string s in pageContents)
+                {                  
+                    Console.WriteLine(s);
+                    if (isInputActive == true)
+                    {
+                        if (s == pageContents[pageContents.Length - 5])
+                        {
+                            break;
+                        }
+                    }                    
+                }
+
+                if (isInputActive == true)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("1 - " + pageContents[pageContents.Length - 4]);
+                    Console.WriteLine("2 - " + pageContents[pageContents.Length - 3]);
+                }
+            }
+        }
+
+        //Checks if everything is alright before playing the game
+        static void DebugLog()
+        {
+
+            //-----------------------checks if the story file exists-----------------------
+
+            Console.Write("Checking if Story.txt exists... ");
+            if (File.Exists(storyFile))
+            {
+                Console.Write("(Exists)");
+            }
+
+            else
+            {
+                Console.Write("(Missing)");
+                Console.ReadKey(true);
+                gameLoop = false;
+            }
+
+            //---------------------Checks if the save file Exists--------------------------
+
+            Console.Write("Checking if SaveGame.txt exists... ");
+            if (File.Exists(saveFile))
+            {
+                Console.Write("(Exists)");
+            }
+
+            else
+            {
+                Console.Write("(Missing)");
+                Console.ReadKey(true);
+                gameLoop = false;
+            }
+        }
+
+        //Ends the gameLoop
+        static void EndGame()
+        {
+            //Checks if pageContents has "GameOver" in it
+            // if it does. Kick player to the title and resets currentPage to 0
+            if (pageContents.Contains("GameOver"))
+            {                
+                isInputActive = false;
+                isTitleActive = true;
+                currentPage = 0;
+            }
+        }
+
+        //Calls Story.txt
+        static void InitiateStory()
         {
             //==========================================Story Arrays=================================================
             // use (';') to split strings.
             // use (end) for end page.
             // use (title) to determine title page
             story = File.ReadAllLines(storyFile);
-            //=======================================================================================================
+            //=======================================================================================================               
+        }
 
-            //splits storyArray into subArray (sub)
-            Split();
+        //Parses the Substring
+        static void ParseSub()
+        {
+            OptionOne = pageContents[pageContents.Length - 2];
+            OptionTwo = pageContents[pageContents.Length - 1];
 
-            //Display Story
-            Console.Clear();
-            Console.WriteLine("Page " + pageNumber);
-            Console.WriteLine("");
-            Console.WriteLine(sub[0]);
-            Console.WriteLine(sub[1]);
+            //Converts choice one into a int
+            Int32.TryParse(OptionOne, out choiceOne);
 
-            //Checks if gameOver
-            GameEnd();          
-         
+            //Converts choice two into an int
+            Int32.TryParse(OptionTwo, out choiceTwo);
         }
 
         //Loops Game
-        static void GameLoop()
+        static void RunGame()
         {
             while (gameLoop == true)
-            {
-                Story();
-                PlayerInput();
+            {             
+                DisplayStory();
+                ReadInput();               
             }
         }
 
         //Reads player input
-        static void PlayerInput()
+        static void ReadInput()
         {
             //Player Input
             ConsoleKeyInfo Input = Console.ReadKey(true);
-            if (inputDis == false)
+            if (isInputActive == true)
             {
-                //turns string to int
-                Parse();
 
-                //Detects if A is pressed
-                if (Input.Key == ConsoleKey.A)
-                {           
-                    //Page number changes to slected choice
-                    pageNumber = choiceA;
+                if (isTitleActive == false)
+                {
+                    //turns string to int
+                    ParseSub();
+                }
+                
+                //Detects if 1 is pressed
+                if (Input.Key == ConsoleKey.D1)
+                {   
+                    //If title is active then D1 = New Game
+                    if (isTitleActive == true)
+                    {
+                        isTitleActive = false;
+                    }
+
+                    else
+                    {
+                        //Page number changes to slected choice
+                        currentPage = choiceOne;
+                    }                    
                 }
 
-                //Detects if B is pressed
-                if (Input.Key == ConsoleKey.B)
+                //Detects if 2 is pressed
+                if (Input.Key == ConsoleKey.D2)
+                {                   
+                    if (isTitleActive == true)
+                    {
+                        SaveData();
+                    }
+
+                    else
+                    {
+                        //Page number changes to slected choice
+                        currentPage = choiceTwo;
+                    }                    
+                }
+
+                //Detects if 3 is pressed
+                if (Input.Key == ConsoleKey.D3)
+                {    
+                    if (isTitleActive == true)
+                    {
+                        //options                        
+                    }
+
+                    else
+                    {
+                        //Saves Current Page
+                        pageToString = currentPage.ToString();
+                        File.WriteAllText(saveFile, pageToString);
+                    }
+                }
+
+                //Detects if 4 is pressed
+                if (Input.Key == ConsoleKey.D4)
                 {
-                   
-                    //Stops game if Title is active
-                    if (sub.Contains("title"))
+                    if (isTitleActive == true)
                     {
                         gameLoop = false;
                     }
 
-                    //Page number changes to slected choice
-                    pageNumber = choiceB;
+                    else
+                    {
+                        SaveData();
+                    }
                 }
 
-                //Detects if S is pressed
-                if (Input.Key == ConsoleKey.S)
+                if (Input.Key == ConsoleKey.Escape)
                 {
-                    File.WriteAllLines(saveFile, sub);
-                }
+                    if (isTitleActive == true)
+                    {
+                        gameLoop = false;
+                    }
 
-                if (Input.Key == ConsoleKey.L)
-                {
-                    Console.Clear();
-                    
+                    else
+                    {
+                        isTitleActive = true;
+                    }
                 }
             }                 
         }
 
-        static void GameEnd()
+        //Splits Story into sub
+        static void SplitStory()
         {
-            //Checks if subArray has "end" in it
-            // if it does. End the game
-            if (sub.Contains("end"))
+            //turns page into story substring then splits the char (';') from it
+            if (currentPage > 0) 
+            { 
+                currentPage -= 1; 
+            }
+
+            pageContents = story[currentPage].Split(splits);
+        }
+
+        //Holds and Loads Save Data
+        static void SaveData()
+        {
+            string savedGame;
+            Console.Clear();
+            savedGame = File.ReadAllText(saveFile);
+            if (savedGame == "")
             {
-                gameLoop = false;
-                inputDis = true;
+                Console.WriteLine("No save data found");
+            }
+            else
+            {
+                currentPage = int.Parse(savedGame);
+            }
+
+        }
+
+        //Shows the Title
+        static void ShowTitle()
+        {
+            if (isTitleActive == true)
+            {
+                string title = File.ReadAllText(titleFile);
+                Console.Clear();
+                Console.WriteLine(title);                
             }
         }
 
-        static void Split()
+        //Shows the Main Menu
+        static void ShowMainMenu()
         {
-            //turns page into story substring then splits the char (';') from it
-            sub = story[pageNumber].Split(splits);
-            
-
-        }
-
-        static void Parse()
-        {
-            nextPageA = sub[2];
-            nextPageB = sub[3];
-
-            //Converts choice one into a int
-            Int32.TryParse(nextPageA, out choiceA);
-
-            //Converts choice two into an int
-            Int32.TryParse(nextPageB, out choiceB);
+            Console.WriteLine("------------------------------------------------------------");
+            Console.WriteLine("|                                                          |");
+            Console.WriteLine("|                        1.New Game                        |");
+            Console.WriteLine("|                                                          |");
+            Console.WriteLine("|                        2.Load Game                       |");
+            Console.WriteLine("|                                                          |");
+            Console.WriteLine("|                        3.Options                         |");
+            Console.WriteLine("|                                                          |");
+            Console.WriteLine("|                        4.Exit                            |");
+            Console.WriteLine("|                                                          |");
+            Console.WriteLine("------------------------------------------------------------");
+            isInputActive = true;
         }
     }
 }

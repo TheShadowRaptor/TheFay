@@ -1,0 +1,1 @@
+When formating story the last lines should be built like this (option 1, Option 2, NextPageNumber, NextPageNumber)
