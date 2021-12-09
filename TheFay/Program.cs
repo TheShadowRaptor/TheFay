@@ -33,9 +33,6 @@ namespace TheFay
         //Checks if game is running
         static bool gameLoop = true;
 
-        //Disables Input
-        static bool isInputActive = true;
-
         //Checks if Title is active
         static bool isTitleActive = true;
 
@@ -43,8 +40,10 @@ namespace TheFay
         //initilizes "story.txt" file
         static string storyFile = "Story.txt";
 
-        //initilizes "SavedGame.txt" file
-        static string saveFile = "SavedGame.txt";
+        //initilizes "SaveFiles.txt" file
+        static string saveFile1 = "SaveFile1.txt";
+        static string saveFile2 = "SaveFile2.txt";
+        static string saveFile3 = "SaveFile3.txt";
 
         //initilizes "Title.txt" file
         static string titleFile = "Title.txt";
@@ -146,7 +145,7 @@ namespace TheFay
             //---------------------Checks if the save file Exists--------------------------
 
             Console.Write("Checking if SaveGame.txt exists... ");
-            if (File.Exists(saveFile))
+            if (File.Exists(saveFile1))
             {
                 Console.Write("(Exists)");
             }
@@ -265,9 +264,7 @@ namespace TheFay
 
                         else
                         {
-                            //Saves Current Page
-                            pageToString = currentPage.ToString();
-                            File.WriteAllText(saveFile, pageToString);
+                            SaveGame();                          
                         }
                         break;
                     }
@@ -307,7 +304,6 @@ namespace TheFay
                         Console.Write(new string(' ', Console.BufferWidth));
                         Console.SetCursorPosition(0, Console.CursorTop - 1);
                         Console.WriteLine("{Error} Button does not exist");
-
                     }
                 }
             }
@@ -332,19 +328,75 @@ namespace TheFay
 
         //Holds and Loads Save Data
         static void SaveData()
-        {
+        {           
             string savedGame;
             Console.Clear();
-            savedGame = File.ReadAllText(saveFile);
+            savedGame = File.ReadAllText(saveFile1);
             if (savedGame == "")
             {
                 Console.WriteLine("No save data found");
             }
             else
             {
+                Console.WriteLine("Choose a slot to load");
+                ConsoleKeyInfo Input = Console.ReadKey(true);
                 currentPage = int.Parse(savedGame);
             }
 
+        }
+
+        //Saves game within saveFile
+        static void SaveGame()
+        {
+            Console.Clear();
+            bool saveLoop = true;
+
+            string slotOne = saveFile1;
+            string slotTwo = saveFile2;
+            string slotThree = saveFile3;
+            while (saveLoop == true)
+            {
+                //Saves Current Page
+                Console.WriteLine("Choose a save slot");
+                pageToString = currentPage.ToString();
+
+                Console.WriteLine("1 - Slot One " + "[ " + slotOne + " ]");
+                Console.WriteLine(" ");
+                Console.WriteLine("2 - Slot Two " + "[ " + slotTwo + " ]");
+                Console.WriteLine(" ");
+                Console.WriteLine("3 - Slot Three " + "[ " + slotThree + " ]");
+                Console.WriteLine(" ");
+                Console.WriteLine("4 - Back");
+                ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                if (Input.Key == ConsoleKey.D1)
+                {
+                    File.WriteAllText(saveFile1, pageToString);
+                }
+
+                else if (Input.Key == ConsoleKey.D2)
+                {
+                    File.WriteAllText(saveFile2, pageToString);
+                }
+
+                else if (Input.Key == ConsoleKey.D3)
+                {
+                    File.WriteAllText(saveFile3, pageToString);
+                }
+
+                else if (Input.Key == ConsoleKey.D4)
+                {
+                    saveLoop = false;
+                }
+
+                else
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(new string(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.WriteLine("{Error} Button does not exist");
+                }
+            }            
         }
 
         //Shows the Title
@@ -378,7 +430,6 @@ namespace TheFay
         {
             currentPage = 0;
             endPageActive = false;
-            isInputActive = true;
         }
     }
 }
