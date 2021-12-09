@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace TheFay
 {
     class Program
@@ -64,6 +65,9 @@ namespace TheFay
         //Detetects if on endPage
         static bool endPageActive = false;
 
+        //Turns the Input Method off
+        static bool isInputActive = true;
+
 
         //==========================================================================================================
 
@@ -103,23 +107,51 @@ namespace TheFay
                 Console.Clear();
 
                 Console.WriteLine("Page " + (currentPage + 1));                             
-                Console.WriteLine("");
-
-                //------------------------------------Top Border---------------------------
-
-                Console.WriteLine("=======================================================================");
-                //-------------------------------------------------------------------------
+                Console.WriteLine("");               
 
                 //Writes everyline in pageContents up till the last 4 (Option1, Option2, page1, page2)
                 //If end page it will display everything
-                foreach (string s in pageContents)
-                {                  
-                    Console.WriteLine(s);
-                    if (endPageActive == false)
+                //------------------------------------------------------------------------------------
+
+                //error checks for a misformated line
+                if (pageContents.Length < 5)
+                {
+                    Console.WriteLine("{Error} The Correct story format (Plot, Options1, Options2, Destination1, Destination2) Does not exist.");
+                    Console.WriteLine("Please check the Story.txt file for any errors");
+                    Console.WriteLine("Press any key to close the application");
+                    Console.ReadKey(true);
+                    isInputActive = false;
+                    gameLoop = false;
+                }               
+                //-------------------------------------------------------------------------
+
+                //Checks for a blank line
+                else if (pageContents[currentPage] == "")
+                {
+                    Console.WriteLine("{Error} The story line is blank.");
+                    Console.WriteLine("Please check the Story.txt file for any errors");
+                    Console.WriteLine("Press any key to close the application");
+                    Console.ReadKey(true);
+                    isInputActive = false;
+                    gameLoop = false;
+                }
+
+                else
+                {
+                    //------------------------------------Top Border---------------------------
+
+                    Console.WriteLine("=======================================================================");
+
+                    //Displays story text and leaves out Options and Destinations
+                    foreach (string s in pageContents)
                     {
-                        if (s == pageContents[pageContents.Length - 5])
+                        Console.WriteLine(s);
+                        if (endPageActive == false)
                         {
-                            break;
+                            if (s == pageContents[pageContents.Length - 5])
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -129,22 +161,24 @@ namespace TheFay
                 Console.WriteLine("=======================================================================");
                 //---------------------------------------------------------------------------
 
-                //Shows players options
-                //It 
+                //Shows players Options
                 if (endPageActive == false)
                 {
-                    Console.WriteLine("");
-                    Console.WriteLine("=======================================");
-                    Console.WriteLine("[1] - " + pageContents[pageContents.Length - 4]);
-                    Console.WriteLine("[2] - " + pageContents[pageContents.Length - 3]);
-                    Console.WriteLine("=======================================");
-                    Console.WriteLine("");
-                    Console.WriteLine("---------------------------------------");
-                    Console.WriteLine("|                                     |");
-                    Console.WriteLine("|  [3] - SaveGame    [4] - LoadGame   |");
-                    Console.WriteLine("|       [Esc] - Return to title       |");
-                    Console.WriteLine("|                                     |");
-                    Console.WriteLine("---------------------------------------");
+                    if (pageContents.Length >= 5)
+                    {
+                        Console.WriteLine("");
+                        Console.WriteLine("=======================================");
+                        Console.WriteLine("[1] - " + pageContents[pageContents.Length - 4]);
+                        Console.WriteLine("[2] - " + pageContents[pageContents.Length - 3]);
+                        Console.WriteLine("=======================================");
+                        Console.WriteLine("");
+                        Console.WriteLine("---------------------------------------");
+                        Console.WriteLine("|                                     |");
+                        Console.WriteLine("|  [3] - SaveGame    [4] - LoadGame   |");
+                        Console.WriteLine("|       [Esc] - Return to title       |");
+                        Console.WriteLine("|                                     |");
+                        Console.WriteLine("---------------------------------------");
+                    }                   
                 }
                 Console.WriteLine("");
                 Console.WriteLine("");
@@ -156,11 +190,10 @@ namespace TheFay
         {
 
             //-----------------------checks if the story file exists-----------------------
-
             Console.Write("Checking if Story.txt exists... ");
             if (File.Exists(storyFile))
             {
-                Console.Write("(Exists)");
+                Console.WriteLine("(Exists)");
             }
 
             else
@@ -169,13 +202,30 @@ namespace TheFay
                 Console.ReadKey(true);
                 gameLoop = false;
             }
+
+            Console.WriteLine("");
+
+            Console.Write("Checking if Title.txt exists... ");
+            if (File.Exists(titleFile))
+            {
+                Console.WriteLine("(Exists)");
+            }
+
+            else
+            {
+                Console.Write("(Missing)");
+                Console.ReadKey(true);
+                gameLoop = false;
+            }
+
+            Console.WriteLine("");
 
             //---------------------Checks if the save file Exists--------------------------
 
-            Console.Write("Checking if SaveGame.txt exists... ");
+            Console.Write("Checking if SaveFile1.txt exists... ");
             if (File.Exists(saveFile1))
             {
-                Console.Write("(Exists)");
+                Console.WriteLine("(Exists)");
             }
 
             else
@@ -184,6 +234,44 @@ namespace TheFay
                 Console.ReadKey(true);
                 gameLoop = false;
             }
+
+            Console.Write("Checking if SaveFile2.txt exists... ");
+            if (File.Exists(saveFile2))
+            {
+                Console.WriteLine("(Exists)");
+            }
+
+            else
+            {
+                Console.Write("(Missing)");
+                Console.ReadKey(true);
+                gameLoop = false;
+            }
+
+            Console.Write("Checking if SaveFile3.txt exists... ");
+            if (File.Exists(saveFile3))
+            {
+                Console.WriteLine("(Exists)");
+            }
+
+            else
+            {
+                Console.Write("(Missing)");
+                Console.ReadKey(true);
+                gameLoop = false;
+            }
+
+            if (!File.Exists(storyFile) || !File.Exists(titleFile) || !File.Exists(saveFile1) || !File.Exists(saveFile2) || !File.Exists(saveFile3))
+            {
+                Console.WriteLine("{Error} Files are missing...");
+                Console.WriteLine("Press any key to close the application");
+                Console.ReadKey(true);
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.ReadKey(true);
+            }           
         }
 
         //Ends the gameLoop
@@ -228,7 +316,10 @@ namespace TheFay
             while (gameLoop == true)
             {             
                 DisplayStory();
-                ReadInput();                  
+                if (isInputActive == true)
+                {
+                    ReadInput();
+                }                                
             }
         }
 
@@ -364,81 +455,109 @@ namespace TheFay
 
             if (slotOne == "")
             {
-                Console.WriteLine("No save data found");
+                slotParseOne = -1;
             }
 
             if (slotTwo == "")
             {
-                Console.WriteLine("No save data found");
+                slotParseTwo = -1;
             }
 
             if (slotThree == "")
             {
-                Console.WriteLine("No save data found");
+                slotParseThree = -1;
             }
 
-            else
+            bool loadLoop = true;           
+
+            while (loadLoop == true)
             {
-                bool loadLoop = true;
+                Console.WriteLine("Choose a slot to load");
 
-                slotParseOne = int.Parse(slotOne);
-                slotParseTwo = int.Parse(slotTwo);
-                slotParseThree = int.Parse(slotThree);
+                Console.WriteLine("---------------------------------------------------------------");
+                Console.WriteLine("1 - Slot One " + "[ " + "Page" + "{" + (slotParseOne + 1) + "}" + " ]");
+                Console.WriteLine(" ");
+                Console.WriteLine("2 - Slot Two " + "[ " + "Page" + "{" + (slotParseTwo + 1) + "}" + " ]");
+                Console.WriteLine(" ");
+                Console.WriteLine("3 - Slot Three " + "[ " + "Page" + "{" + (slotParseThree + 1) + "}" + " ]");
+                Console.WriteLine(" ");
+                Console.WriteLine("4 - Back");
+                Console.WriteLine("---------------------------------------------------------------");
 
-                while (loadLoop == true)
+                ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                if (Input.Key == ConsoleKey.D1)
                 {
-                    Console.WriteLine("Choose a slot to load");
-
-                    Console.WriteLine("---------------------------------------------------------------");
-                    Console.WriteLine("1 - Slot One " + "[ " + "Page" + "{" + (slotParseOne + 1) + "}" + " ]");
-                    Console.WriteLine(" ");
-                    Console.WriteLine("2 - Slot Two " + "[ " + "Page" + "{" + (slotParseTwo + 1) + "}" + " ]");
-                    Console.WriteLine(" ");
-                    Console.WriteLine("3 - Slot Three " + "[ " + "Page" + "{" + (slotParseThree + 1) + "}" + " ]");
-                    Console.WriteLine(" ");
-                    Console.WriteLine("4 - Back");
-                    Console.WriteLine("---------------------------------------------------------------");
-
-                    ConsoleKeyInfo Input = Console.ReadKey(true);
-
-                    if (Input.Key == ConsoleKey.D1)
+                    if (slotParseOne == -1)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("No saved data to load...");
+                    }
+                    else
                     {
                         currentPage = slotParseOne + 1;
                         loadLoop = false;
                         isTitleActive = false;
-                        Console.WriteLine("Loaded slot one!");
-                    }
 
-                    else if (Input.Key == ConsoleKey.D2)
+                        Console.WriteLine("Loaded slot one!");
+                        Console.WriteLine("Press an key to continue");
+                        Console.ReadKey(true);
+                    }
+                }
+
+                else if (Input.Key == ConsoleKey.D2)
+                {
+                    if (slotParseTwo == -1)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("No saved data to load...");                        
+                    }
+                    else
                     {
                         currentPage = slotParseTwo + 1;
                         loadLoop = false;
                         isTitleActive = false;
+
                         Console.WriteLine("Loaded slot two!");
+                        Console.WriteLine("Press an key to continue");
+                        Console.ReadKey(true);
                     }
+                }
 
-                    else if (Input.Key == ConsoleKey.D3)
+                else if (Input.Key == ConsoleKey.D3)
+                {
+                    if (slotParseThree == -1)
                     {
-                        currentPage = slotParseThree + 1;
-                        loadLoop = false;
-                        isTitleActive = false;
-                        Console.WriteLine("Loaded slot three!");
-                    }
-
-                    else if (Input.Key == ConsoleKey.D4)
-                    {
-                        loadLoop = false;
+                        Console.Clear();
+                        Console.WriteLine("No saved data to load...");
                     }
 
                     else
                     {
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        Console.Write(new string(' ', Console.BufferWidth));
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        Console.WriteLine("{Error} Button does not exist");
+                        currentPage = slotParseThree + 1;
+                        loadLoop = false;
+                        isTitleActive = false;
+
+                        Console.WriteLine("Loaded slot three!");
+                        Console.WriteLine("Press an key to continue");
+                        Console.ReadKey(true);
                     }
-                }               
-            }
+                }
+
+                else if (Input.Key == ConsoleKey.D4)
+                {
+                    loadLoop = false;
+                }
+
+                else
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(new string(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.WriteLine("{Error} Button does not exist");
+                }
+            }               
+            
         }
 
         //Saves game within saveFile
@@ -449,16 +568,27 @@ namespace TheFay
 
             while (saveLoop == true)
             {
-                //---------------------------------Saves Current Page------------------------------------            
+                //---------------------------------Saves Current Page------------------------------------                           
+                Console.WriteLine("Choose a save slot");
+
                 slotOne = File.ReadAllText(saveFile1);
                 slotTwo = File.ReadAllText(saveFile2);
                 slotThree = File.ReadAllText(saveFile3);
 
-                slotParseOne = int.Parse(slotOne); 
-                slotParseTwo = int.Parse(slotTwo); 
-                slotParseThree = int.Parse(slotThree); 
+                if (slotOne == "")
+                {
+                    slotParseOne = -1;
+                }
 
-                Console.WriteLine("Choose a save slot");
+                if (slotTwo == "")
+                {
+                    slotParseTwo = -1;
+                }
+
+                if (slotThree == "")
+                {
+                    slotParseThree = -1; 
+                }
 
                 Console.WriteLine("---------------------------------------------------------------");
                 Console.WriteLine("1 - Slot One " + "[ " + "Page" + "{" + (slotParseOne + 1) + "}" + " ]");
@@ -504,6 +634,21 @@ namespace TheFay
                     Console.SetCursorPosition(0, Console.CursorTop - 1);
                     Console.WriteLine("{Error} Button does not exist");
                 }
+
+                if (slotOne != "")
+                {
+                    slotParseOne = int.Parse(slotOne);
+                }
+
+                if (slotTwo != "")
+                {
+                    slotParseTwo = int.Parse(slotTwo);
+                }
+
+                if (slotThree != "")
+                {
+                    slotParseThree = int.Parse(slotThree);
+                }                   
             }            
         }
 
@@ -538,6 +683,7 @@ namespace TheFay
         {
             currentPage = 0;
             endPageActive = false;
+            isInputActive = true;
         }
     }
 }
