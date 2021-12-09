@@ -53,6 +53,9 @@ namespace TheFay
         //converts pageNumber to string
         static string pageToString;
 
+        //Detetects if on endPage
+        static bool endPageActive = false;
+
 
         //==========================================================================================================
 
@@ -72,12 +75,15 @@ namespace TheFay
         //Displays Story
         static void DisplayStory()
         {
-            ShowTitle();
-            Console.WriteLine("");
-            Console.WriteLine("");
-            ShowMainMenu();
-
-            if (isTitleActive == false)
+            if (isTitleActive == true)
+            {
+                ShowTitle();
+                Console.WriteLine("");
+                Console.WriteLine("");
+                ShowMainMenu();
+            }
+            
+            else
             {
                 //splits storyArray into subArray (sub)
                 SplitStory();
@@ -90,10 +96,13 @@ namespace TheFay
 
                 Console.WriteLine("Page " + (currentPage + 1));                             
                 Console.WriteLine("");
+
+                //Writes everyline in pageContents up till the last 4 (Option1, Option2, page1, page2)
+                //If end page it will display everything
                 foreach (string s in pageContents)
                 {                  
                     Console.WriteLine(s);
-                    if (isInputActive == true)
+                    if (endPageActive == false)
                     {
                         if (s == pageContents[pageContents.Length - 5])
                         {
@@ -102,12 +111,16 @@ namespace TheFay
                     }                    
                 }
 
-                if (isInputActive == true)
+                //Shows players options
+                //It 
+                if (endPageActive == false)
                 {
                     Console.WriteLine();
                     Console.WriteLine("1 - " + pageContents[pageContents.Length - 4]);
                     Console.WriteLine("2 - " + pageContents[pageContents.Length - 3]);
                 }
+                Console.WriteLine("");
+                Console.WriteLine("");
             }
         }
 
@@ -148,14 +161,13 @@ namespace TheFay
 
         //Ends the gameLoop
         static void EndGame()
-        {
+        {           
             //Checks if pageContents has "GameOver" in it
-            // if it does. Kick player to the title and resets currentPage to 0
+            // if it does. Kick player to the title
             if (pageContents.Contains("GameOver"))
-            {                
-                isInputActive = false;
+            {
+                endPageActive = true;
                 isTitleActive = true;
-                currentPage = 0;
             }
         }
 
@@ -189,98 +201,121 @@ namespace TheFay
             while (gameLoop == true)
             {             
                 DisplayStory();
-                ReadInput();               
+                ReadInput();                  
             }
         }
 
         //Reads player input
         static void ReadInput()
         {
-            //Player Input
-            ConsoleKeyInfo Input = Console.ReadKey(true);
-            if (isInputActive == true)
+            bool waitingForInput = true;
+
+            if(endPageActive == false)
             {
-
-                if (isTitleActive == false)
+                while (waitingForInput == true)
                 {
-                    //turns string to int
-                    ParseSub();
-                }
-                
-                //Detects if 1 is pressed
-                if (Input.Key == ConsoleKey.D1)
-                {   
-                    //If title is active then D1 = New Game
-                    if (isTitleActive == true)
+                    //Player Input
+                    ConsoleKeyInfo Input = Console.ReadKey(true);
+                    if (isTitleActive == false)
                     {
-                        isTitleActive = false;
+                        //turns string to int
+                        ParseSub();
+                    }
+
+                    //Detects if 1 is pressed
+                    if (Input.Key == ConsoleKey.D1)
+                    {
+                        //If title is active then D1 = New Game
+                        if (isTitleActive == true)
+                        {
+                            isTitleActive = false;
+                        }
+
+                        else
+                        {
+                            //Page number changes to slected choice
+                            currentPage = choiceOne;
+                        }
+                        break;
+                    }
+
+                    //Detects if 2 is pressed
+                    else if (Input.Key == ConsoleKey.D2)
+                    {
+                        if (isTitleActive == true)
+                        {
+                            SaveData();
+                        }
+
+                        else
+                        {
+                            //Page number changes to slected choice
+                            currentPage = choiceTwo;
+                        }
+                        break;
+                    }
+
+                    //Detects if 3 is pressed
+                    else if (Input.Key == ConsoleKey.D3)
+                    {
+                        if (isTitleActive == true)
+                        {
+                            //options                        
+                        }
+
+                        else
+                        {
+                            //Saves Current Page
+                            pageToString = currentPage.ToString();
+                            File.WriteAllText(saveFile, pageToString);
+                        }
+                        break;
+                    }
+
+                    //Detects if 4 is pressed
+                    else if (Input.Key == ConsoleKey.D4)
+                    {
+                        if (isTitleActive == true)
+                        {
+                            gameLoop = false;
+                        }
+
+                        else
+                        {
+                            SaveData();
+                        }
+                        break;
+                    }
+
+                    else if (Input.Key == ConsoleKey.Escape)
+                    {
+                        if (isTitleActive == true)
+                        {
+                            gameLoop = false;
+                        }
+
+                        else
+                        {
+                            isTitleActive = true;
+                        }
+                        break;
                     }
 
                     else
                     {
-                        //Page number changes to slected choice
-                        currentPage = choiceOne;
-                    }                    
-                }
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.Write(new string(' ', Console.BufferWidth));
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.WriteLine("{Error} Button does not exist");
 
-                //Detects if 2 is pressed
-                if (Input.Key == ConsoleKey.D2)
-                {                   
-                    if (isTitleActive == true)
-                    {
-                        SaveData();
-                    }
-
-                    else
-                    {
-                        //Page number changes to slected choice
-                        currentPage = choiceTwo;
-                    }                    
-                }
-
-                //Detects if 3 is pressed
-                if (Input.Key == ConsoleKey.D3)
-                {    
-                    if (isTitleActive == true)
-                    {
-                        //options                        
-                    }
-
-                    else
-                    {
-                        //Saves Current Page
-                        pageToString = currentPage.ToString();
-                        File.WriteAllText(saveFile, pageToString);
                     }
                 }
-
-                //Detects if 4 is pressed
-                if (Input.Key == ConsoleKey.D4)
-                {
-                    if (isTitleActive == true)
-                    {
-                        gameLoop = false;
-                    }
-
-                    else
-                    {
-                        SaveData();
-                    }
-                }
-
-                if (Input.Key == ConsoleKey.Escape)
-                {
-                    if (isTitleActive == true)
-                    {
-                        gameLoop = false;
-                    }
-
-                    else
-                    {
-                        isTitleActive = true;
-                    }
-                }
-            }                 
+            }
+            else
+            {
+                Console.ReadKey(true);
+            }
+                         
         }
 
         //Splits Story into sub
@@ -315,12 +350,9 @@ namespace TheFay
         //Shows the Title
         static void ShowTitle()
         {
-            if (isTitleActive == true)
-            {
-                string title = File.ReadAllText(titleFile);
-                Console.Clear();
-                Console.WriteLine(title);                
-            }
+            string title = File.ReadAllText(titleFile);
+            Console.Clear();
+            Console.WriteLine(title);                
         }
 
         //Shows the Main Menu
@@ -337,6 +369,15 @@ namespace TheFay
             Console.WriteLine("|                        4.Exit                            |");
             Console.WriteLine("|                                                          |");
             Console.WriteLine("------------------------------------------------------------");
+            Console.WriteLine("");
+            ResetStory();
+
+        }
+
+        static void ResetStory()
+        {
+            currentPage = 0;
+            endPageActive = false;
             isInputActive = true;
         }
     }
