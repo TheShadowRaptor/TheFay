@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 
 namespace TheTemple
@@ -68,7 +69,6 @@ namespace TheTemple
         //Turns the Input Method off
         static bool isInputActive = true;
 
-
         //==========================================================================================================
 
         //Plays Code
@@ -117,24 +117,13 @@ namespace TheTemple
                 if (pageContents.Length < 5)
                 {
                     Console.WriteLine("{Error} The Correct story format (Plot, Options1, Options2, Destination1, Destination2) Does not exist.");
-                    Console.WriteLine("Please check the Story.txt file for any errors");
-                    Console.WriteLine("Press any key to close the application");
+                    Console.WriteLine("Please check the Story.txt file for any errors.");
+                    Console.WriteLine("Press any key to close the application.");
                     Console.ReadKey(true);
                     isInputActive = false;
                     gameLoop = false;
                 }               
-                //-------------------------------------------------------------------------
-
-                //Checks for a blank line
-                else if (pageContents.Length <= 0)
-                {
-                    Console.WriteLine("{Error} The story line is blank.");
-                    Console.WriteLine("Please check the Story.txt file for any errors");
-                    Console.WriteLine("Press any key to close the application");
-                    Console.ReadKey(true);
-                    isInputActive = false;
-                    gameLoop = false;
-                }
+                //-------------------------------------------------------------------------             
 
                 else
                 {
@@ -279,7 +268,7 @@ namespace TheTemple
         {           
             //Checks if pageContents has "GameOver" in it
             // if it does. Kick player to the title
-            if (pageContents.Contains("GameOver") || pageContents.Contains("You Win"))
+            if (pageContents.Contains("Game Over") || pageContents.Contains("You Win"))
             {
                 endPageActive = true;
                 isTitleActive = true;
@@ -436,13 +425,40 @@ namespace TheTemple
         //Splits Story into sub
         static void SplitStory()
         {
-            //turns page into story substring then splits the char (';') from it
+            //Makes page 0 page 1;
             if (currentPage > 0) 
             { 
                 currentPage -= 1; 
             }
 
-            pageContents = story[currentPage].Split(splits);
+            if (currentPage > story.Length)
+            {
+                Console.Clear();
+                Console.WriteLine("{Error} The story page number. " + "[" + currentPage + "]" + " Does not exist.");
+                Console.WriteLine("Please check the Story.txt file for any errors.");
+                Console.WriteLine("Press any key to close the application.");
+                Console.ReadKey(true);
+                isInputActive = false;
+                gameLoop = false;
+            }
+
+            //  //Checks for a blank line
+            else if (story[currentPage] == "")
+            {
+                Console.Clear();
+                Console.WriteLine("{Error} The story line is blank.");
+                Console.WriteLine("Please check the Story.txt file for any errors.");
+                Console.WriteLine("Press any key to close the application.");
+                Console.ReadKey(true);
+                isInputActive = false;
+                gameLoop = false;
+            }
+
+            else
+            {
+                //turns page into story substring then splits the char (';') from it
+                pageContents = story[currentPage].Split(splits);
+            }              
         }
 
         //Holds and Loads Save Data
