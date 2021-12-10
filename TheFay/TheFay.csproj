@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{36912134-F2CC-4F19-9DAE-A238B5AA248E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TheFay</RootNamespace>
-    <AssemblyName>TheFay</AssemblyName>
+    <RootNamespace>TheTemple</RootNamespace>
+    <AssemblyName>TheTemple</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="README.txt">
+    <Content Include="ForWriter.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SaveFile1.txt">

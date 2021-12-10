@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace TheFay
+namespace TheTemple
 {
     class Program
     {
@@ -98,16 +98,16 @@ namespace TheFay
             else
             {
                 //splits storyArray into subArray (sub)
-                SplitStory();
-
-                //Checks if gameOver
-                EndGame();
+                SplitStory();               
 
                 //Displays Story
                 Console.Clear();
 
                 Console.WriteLine("Page " + (currentPage + 1));                             
-                Console.WriteLine("");               
+                Console.WriteLine("");         
+                
+                 //Checks if gameOver
+                EndGame();
 
                 //Writes everyline in pageContents up till the last 4 (Option1, Option2, page1, page2)
                 //If end page it will display everything
@@ -126,7 +126,7 @@ namespace TheFay
                 //-------------------------------------------------------------------------
 
                 //Checks for a blank line
-                else if (pageContents[currentPage] == "")
+                else if (pageContents.Length <= 0)
                 {
                     Console.WriteLine("{Error} The story line is blank.");
                     Console.WriteLine("Please check the Story.txt file for any errors");
@@ -279,7 +279,7 @@ namespace TheFay
         {           
             //Checks if pageContents has "GameOver" in it
             // if it does. Kick player to the title
-            if (pageContents.Contains("GameOver"))
+            if (pageContents.Contains("GameOver") || pageContents.Contains("You Win"))
             {
                 endPageActive = true;
                 isTitleActive = true;
@@ -378,7 +378,7 @@ namespace TheFay
                     {
                         if (isTitleActive == true)
                         {
-                            //options                        
+                            OptionsMenu();                      
                         }
 
                         else
@@ -556,10 +556,47 @@ namespace TheFay
                     Console.SetCursorPosition(0, Console.CursorTop - 1);
                     Console.WriteLine("{Error} Button does not exist");
                 }
-            }               
-            
+            }                           
         }
 
+        //The Options menu
+        static void OptionsMenu()
+        {
+            bool optionsLoop = true;
+
+            while (optionsLoop == true)
+            {
+                Console.Clear();
+                Console.WriteLine("-----------------------------------------------------------------");
+                Console.WriteLine("|                              OPTIONS                          |");
+                Console.WriteLine("|                      1 - Change text colour                   |");
+                Console.WriteLine("|                      2 - Back                                 |");
+                Console.WriteLine("|                                                               |");
+                Console.WriteLine("-----------------------------------------------------------------");
+
+                ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                if (Input.Key == ConsoleKey.D1)
+                {
+                    ChangeTextColor();
+                }
+
+                else if (Input.Key == ConsoleKey.D2)
+                {
+                    optionsLoop = false;
+                    break;
+                }
+
+                else
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(new string(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.WriteLine("{Error} Button does not exist");
+                }
+            }
+        }
+            
         //Saves game within saveFile
         static void SaveGame()
         {
@@ -580,14 +617,29 @@ namespace TheFay
                     slotParseOne = -1;
                 }
 
+                else
+                {
+                    slotParseOne = int.Parse(slotOne);
+                }
+
                 if (slotTwo == "")
                 {
                     slotParseTwo = -1;
                 }
 
+                else
+                {
+                    slotParseTwo = int.Parse(slotTwo);
+                }
+
                 if (slotThree == "")
                 {
                     slotParseThree = -1; 
+                }
+
+                else
+                {
+                    slotParseThree = int.Parse(slotThree);
                 }
 
                 Console.WriteLine("---------------------------------------------------------------");
@@ -606,20 +658,31 @@ namespace TheFay
 
                 if (Input.Key == ConsoleKey.D1)
                 {
+                    Console.Clear();
                     File.WriteAllText(saveFile1, pageToString);
                     Console.WriteLine("Saved in slot one!");
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey(true);
+                    Console.Clear();
                 }
 
                 else if (Input.Key == ConsoleKey.D2)
                 {
+                    Console.Clear();
                     File.WriteAllText(saveFile2, pageToString);
                     Console.WriteLine("Saved in slot two!");
+                    Console.ReadKey(true);
+                    Console.Clear();
                 }
 
                 else if (Input.Key == ConsoleKey.D3)
                 {
+                    Console.Clear();
                     File.WriteAllText(saveFile3, pageToString);
                     Console.WriteLine("Saved in slot three!");
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey(true);
+                    Console.Clear();
                 }
 
                 else if (Input.Key == ConsoleKey.D4)
@@ -679,11 +742,74 @@ namespace TheFay
 
         }
 
+        //Resets values in story
         static void ResetStory()
         {
             currentPage = 0;
             endPageActive = false;
             isInputActive = true;
+        }
+
+        //Changes Text colour
+        static void ChangeTextColor()
+        {
+            bool textColorLoop = true;
+
+            while (textColorLoop == true)
+            {
+                Console.Clear();
+                Console.WriteLine("-----------------------------------------------------------------");
+                Console.WriteLine("|                            CHOICES                            |");
+                Console.WriteLine("|                        1 - White                              |");
+                Console.WriteLine("|                        2 - Red                                |");
+                Console.WriteLine("|                        3 - Green                              |");
+                Console.WriteLine("|                        4 - Blue                               |");
+                Console.WriteLine("|                        5 - Matt's favroute colour             |");
+                Console.WriteLine("|                        6 - Back                               |");
+                Console.WriteLine("|                                                               |");
+                Console.WriteLine("-----------------------------------------------------------------");
+
+                ConsoleKeyInfo Input = Console.ReadKey(true);
+
+                if (Input.Key == ConsoleKey.D1)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+                if (Input.Key == ConsoleKey.D2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+
+                if (Input.Key == ConsoleKey.D3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+
+                if (Input.Key == ConsoleKey.D4)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                }
+
+                if (Input.Key == ConsoleKey.D5)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                }
+
+                else if (Input.Key == ConsoleKey.D6)
+                {
+                    textColorLoop = false;
+                    break;
+                }
+
+                else
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(new string(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.WriteLine("{Error} Button does not exist");
+                }
+            }
         }
     }
 }

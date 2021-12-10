@@ -1,0 +1,26 @@
+When formating story the lines should be built like this (Plot; option 1; Option 2; Destination1; Destination2)
+
+The char [;] Splits the story in those five catagories. 
+
+You may even use the [;] char to make paragraphs but make sure to have at least 5 for the (Plot; option 1; Option 2; Destination1; Destination2)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+The word "Game Over" Spelt excatly like that will end the game. You must give it its own split or the program wont read it.
+You will not need (option 1; Option 2; Destination1; Destination2) for a Game Over.
+
+Ex: Plot; Game Over 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+"You Win" Text does the same as Game Over but "You Win" instead.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Each line is a new page
+
+ex:
+
+Page 1:
+Page 2:
+Page 3:
